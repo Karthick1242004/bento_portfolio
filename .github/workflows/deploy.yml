@@ -1,0 +1,39 @@
+name: Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: 
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout Code
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Step 2: Set Up Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    # Step 3: Install Dependencies
+    - name: Install Dependencies
+      run: npm install
+
+    # Step 4: Build the Project
+    - name: Build the Project
+      run: npm run build
+
+    # Step 5: Deploy to Netlify
+    - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v1.2
+      with:
+        publish-dir: ./dist
+        production-deploy: true
+        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
+        NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
