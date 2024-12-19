@@ -1,0 +1,85 @@
+{
+  "siteTitle": "Bentofolio",
+  "socialLinks": {
+    "github": "https://github.com/Kanisha-28-04-2004",
+    "linkedin": "https://www.linkedin.com/in/kanisha-anand-9b8554229/",
+    "leetcode": "https://leetcode.com/u/21CSR076/"
+  },
+  "hero": {
+    "profileImage": "https://static.vecteezy.com/system/resources/thumbnails/034/407/005/small_2x/african-american-female-winking-expression-black-and-white-2d-avatar-illustration-sparkle-smiling-black-girl-outline-cartoon-character-face-isolated-confident-friendly-flat-user-profile-image-vector.jpg",
+    "name": "Kanisha",
+    "title": "fullstack developer and programmer",
+    "description": "I specialize in creating web applications and solving complex problems that require a strong coding touch.",
+    "featuredImage": "https://images.pexels.com/photos/546819/pexels-photo-546819.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+  },
+  "services": [
+    {
+      "icon": "Box",
+      "title": "Fullstack Developer",
+      "description": "Creating web applications based on the provided inputs to fullstack output."
+    },
+    {
+      "icon": "Code",
+      "title": "Programmer",
+      "description": "Crafting unique solutions to complex and interesting problems with a touch of code."
+    },
+    {
+      "icon": "Database",
+      "title": "Data Enthusiast",
+      "description": "Transforming raw data into meaningful insights by data to support data-driven decision making."
+    }
+  ],
+  "testimonials": [
+    {
+      "quote": "We developed a REACT website that utilizes GEMINI AI to provide details about the latest disease outbreaks worldwide. Since GEMINI AI doesn't provide real-time data, we integrated updated news from the W.H.O. website to fetch disease details.",
+      "author": {
+        "name": "Disease Outbreak Prediction",
+        "title": "Frontend Developer",
+        "image": "https://e7.pngegg.com/pngimages/914/758/png-clipart-computer-icons-logo-github-github-logo-logo-computer-program-thumbnail.png"
+      },
+      "image": "https://karthickrajans.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fgemini.6436c8af.png&w=2048&q=75"
+    },
+    {
+      "quote": "his Netflix website clone was developed as a comprehensive project aimed at honing skills in API fetching, posting data, rendering components across various pages, and implementing backend APIs for handling email and password data using MongoDB with Node.",
+      "author": {
+        "name": "Netflix CLone",
+        "title": "Fullstack Developer",
+        "image": "https://e7.pngegg.com/pngimages/914/758/png-clipart-computer-icons-logo-github-github-logo-logo-computer-program-thumbnail.png"
+      },
+      "image": "https://www.researchgate.net/publication/351574981/figure/fig1/AS:1023236699598848@1620970048104/The-Netflix-homepage-an-example-of-carousel-user-interface-in-the-multimedia-streaming.jpg"
+    },
+    {
+      "quote": "As a part of Smart India Hackathon 2023, we selected a problem statement for developing an 'Online integrated platform for students to upload project details'. We developed this project and got selected for the college-level hackathon .",
+      "author": {
+        "name": "Infotube",
+        "title": "Frontend Developer",
+        "image": "https://e7.pngegg.com/pngimages/914/758/png-clipart-computer-icons-logo-github-github-logo-logo-computer-program-thumbnail.png"
+      },
+      "image": "https://karthickrajans.vercel.app/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Finfotube.a0ea3e53.png&w=2048&q=75"
+    }
+  ],
+  "footer": {
+    "contact": {
+      "title": "Have a project in mind?",
+      "subtitle": "Let's discuss your project",
+      "email": "kanishaa.21cse@kongu.edu"
+    },
+    "academic": {
+      "title": "Academic",
+      "qualifications": [
+        {
+          "name": "Ambal Matriculation Higher Secondary School SSLC : 95.4 Percentage",
+          "href": "."
+        },
+        {
+          "name": "Adharsh Vidhyalaya Matriculation Higher Secondary School HSC : 94.3 Percentage",
+          "href": "."
+        },
+        {
+          "name": "Kongu Engineering College Bachelor of Engineering in Computer Science and Engineering CGPA 8.17",
+          "href": "."
+        }
+      ]
+    }
+  }
+}
