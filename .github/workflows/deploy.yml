@@ -35,5 +35,24 @@ jobs:
       with:
         publish-dir: ./dist
         production-deploy: true
-        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
-        NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
+        NETLIFY_AUTH_TOKEN: "nfp_demo_token_for_netlify"
+        NETLIFY_SITE_ID: "demo_netlify_site_id"
+
+    # Step 6: Capture Deployed URL
+    - name: Get Deployed URL
+      run: echo "https://your-deployed-site.netlify.app" > deployed-url.txt
+
+    # Step 7: Update Frontend with Deployed URL
+    - name: Update Frontend with Deployed URL
+      run: |
+        DEPLOYED_URL=$(cat deployed-url.txt)
+        sed -i "s|const DEPLOYED_URL = '.*';|const DEPLOYED_URL = '${DEPLOYED_URL}';|" src/hooks/usePortfolioData.ts
+
+    # Step 8: Commit and Push Changes
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add src/hooks/usePortfolioData.ts
+        git commit -m "Updated deployed URL"
+        git push
