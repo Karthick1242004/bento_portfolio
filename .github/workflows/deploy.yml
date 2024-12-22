@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -35,8 +35,9 @@ jobs:
       with:
         publish-dir: ./dist
         production-deploy: true
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      env:
+        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
+        NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
 
     # Step 6: Capture Deployed URL
     - name: Get Deployed URL
@@ -50,12 +51,14 @@ jobs:
 
     # Step 8: Commit and Push Changes
     - name: Commit and Push Changes
+      env:
+        GITHUB_TOKEN: "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"
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add deployed-url.txt src/hooks/usePortfolioData.ts
         git diff --cached --quiet || git commit -m "Updated deployed URL"
-        git push
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/Karthick1242004/bento_portfolio.git
 
     # Step 9: Clean Up Temporary Files
     - name: Clean Up Temporary Files
