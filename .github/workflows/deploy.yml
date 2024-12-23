@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  test-commit:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,37 +29,18 @@ jobs:
     - name: Build the Project
       run: npm run build
 
-    # Step 5: Deploy to Netlify
-    - name: Deploy to Netlify
-      uses: nwtgck/actions-netlify@v1.2
-      with:
-        publish-dir: ./dist
-        production-deploy: true
-      env:
-        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
-        NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
-
-    # Step 6: Capture Deployed URL
-    - name: Get Deployed URL
-      run: echo "https://your-deployed-site.netlify.app" > deployed-url.txt
-
-    # Step 7: Update Frontend with Deployed URL
-    - name: Update Frontend with Deployed URL
+    # Step 5: Simulate Deployed URL Update
+    - name: Simulate Deployed URL Update
       run: |
-        DEPLOYED_URL=$(cat deployed-url.txt)
-        sed -i "s|const DEPLOYED_URL = '.*';|const DEPLOYED_URL = '${DEPLOYED_URL}';|" src/hooks/usePortfolioData.ts
+        echo "const DEPLOYED_URL = 'https://fake-url.netlify.app';" > src/hooks/usePortfolioData.ts
 
-    # Step 8: Commit and Push Changes
+    # Step 6: Commit and Push Changes
     - name: Commit and Push Changes
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub automatically provides a token to actions
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git add deployed-url.txt src/hooks/usePortfolioData.ts
-        git diff --cached --quiet || git commit -m "Updated deployed URL"
+        git add src/hooks/usePortfolioData.ts
+        git diff --cached --quiet || git commit -m "Updated deployed URL simulation"
         git push https://x-access-token:${GITHUB_TOKEN}@github.com/Karthick1242004/bento_portfolio.git
-
-    # Step 9: Clean Up Temporary Files
-    - name: Clean Up Temporary Files
-      run: rm deployed-url.txt
