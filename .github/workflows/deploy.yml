@@ -44,7 +44,7 @@ jobs:
     - name: Capture Deployed URL
       id: capture-url
       run: |
-        DEPLOYED_URL=$(grep -oP 'Deployed on \K(https?://[^\s]+)' <<< "$(cat /home/runner/work/_temp/_runner_file_debug* | tail -n 50)")
+        DEPLOYED_URL=$(echo "${{ steps.deploy-netlify.outputs.stdout }}" | grep -oP 'Deployed on \K(https?://[^\s]+)')
         if [ -z "$DEPLOYED_URL" ]; then
           echo "Error: Failed to capture deployed URL."
           exit 1
