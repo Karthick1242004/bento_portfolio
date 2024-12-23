@@ -52,7 +52,7 @@
 #     # Step 8: Commit and Push Changes
 #     - name: Commit and Push Changes
 #       env:
-#         GITHUB_TOKEN: "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"
+#         GITHUB_TOKEN: "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"
 #       run: |
 #         git config --global user.name "github-actions[bot]"
 #         git config --global user.email "github-actions[bot]@users.noreply.github.com"
