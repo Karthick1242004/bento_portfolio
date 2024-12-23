@@ -29,14 +29,7 @@ jobs:
     - name: Build the Project
       run: npm run build
 
-    # Step 5: Install Required Tools
-    - name: Install Netlify CLI
-      run: npm install -g netlify-cli
-
-    - name: Install jq
-      run: sudo apt-get install jq -y
-
-    # Step 6: Deploy to Netlify
+    # Step 5: Deploy to Netlify
     - name: Deploy to Netlify
       uses: nwtgck/actions-netlify@v1.2
       with:
@@ -46,15 +39,15 @@ jobs:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
         NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
 
-    # Step 7: Capture Deployed URL
+    # Step 6: Capture Deployed URL from Logs
     - name: Capture Deployed URL
       id: capture-url
       run: |
-        DEPLOYED_URL=$(npx netlify sites:list --json | jq -r '.[] | select(.id=="${{ secrets.NETLIFY_SITE_ID }}") | .url')
+        DEPLOYED_URL=$(cat $GITHUB_WORKSPACE/_actions/nwtgck/actions-netlify@v1.2/*.log | grep -oP 'Deployed on \K(https?://[^\s]+)')
         echo "Deployed URL: $DEPLOYED_URL"
         echo "DEPLOYED_URL=$DEPLOYED_URL" >> $GITHUB_ENV
 
-    # Step 8: Send Deployed URL to Backend
+    # Step 7: Send Deployed URL to Backend
     - name: Send Deployed URL to Backend
       run: |
         curl -X POST https://folio4ubackend-production.up.railway.app/capture-deployed-url \
