@@ -31,6 +31,7 @@ jobs:
 
     # Step 5: Deploy to Netlify
     - name: Deploy to Netlify
+      id: deploy-netlify
       uses: nwtgck/actions-netlify@v1.2
       with:
         publish-dir: ./dist
@@ -43,13 +44,21 @@ jobs:
     - name: Capture Deployed URL
       id: capture-url
       run: |
-        DEPLOYED_URL=$(cat $GITHUB_WORKSPACE/_actions/nwtgck/actions-netlify@v1.2/*.log | grep -oP 'Deployed on \K(https?://[^\s]+)')
+        DEPLOYED_URL=$(grep -oP 'Deployed on \K(https?://[^\s]+)' <<< "$(cat /home/runner/work/_temp/_runner_file_debug* | tail -n 50)")
+        if [ -z "$DEPLOYED_URL" ]; then
+          echo "Error: Failed to capture deployed URL."
+          exit 1
+        fi
         echo "Deployed URL: $DEPLOYED_URL"
         echo "DEPLOYED_URL=$DEPLOYED_URL" >> $GITHUB_ENV
 
     # Step 7: Send Deployed URL to Backend
     - name: Send Deployed URL to Backend
       run: |
+        if [ -z "${{ env.DEPLOYED_URL }}" ]; then
+          echo "Error: Deployed URL is not set."
+          exit 1
+        fi
         curl -X POST https://folio4ubackend-production.up.railway.app/capture-deployed-url \
           -H "Content-Type: application/json" \
           -d "{\"deployedUrl\": \"${{ env.DEPLOYED_URL }}\"}"
