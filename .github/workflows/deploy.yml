@@ -31,20 +31,10 @@ jobs:
 
     # Step 5: Deploy to Netlify
     - name: Deploy to Netlify
-      id: deploy-netlify
-      uses: nwtgck/actions-netlify@v1.2
-      with:
-        publish-dir: ./dist
-        production-deploy: false
-      env:
-        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
-        NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
-
-    # Step 6: Capture Deployed URL from Logs
-    - name: Capture Deployed URL
-      id: capture-url
       run: |
-        DEPLOYED_URL=$(echo "${{ steps.deploy-netlify.outputs.stdout }}" | grep -oP 'Deployed on \K(https?://[^\s]+)')
+        npm install -g netlify-cli
+        npx netlify deploy --dir=./dist --json > deployment_logs.json
+        DEPLOYED_URL=$(cat deployment_logs.json | jq -r '.deploy_url')
         if [ -z "$DEPLOYED_URL" ]; then
           echo "Error: Failed to capture deployed URL."
           exit 1
@@ -52,7 +42,7 @@ jobs:
         echo "Deployed URL: $DEPLOYED_URL"
         echo "DEPLOYED_URL=$DEPLOYED_URL" >> $GITHUB_ENV
 
-    # Step 7: Send Deployed URL to Backend
+    # Step 6: Send Deployed URL to Backend
     - name: Send Deployed URL to Backend
       run: |
         if [ -z "${{ env.DEPLOYED_URL }}" ]; then
