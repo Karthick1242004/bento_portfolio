@@ -29,26 +29,35 @@ jobs:
     - name: Build the Project
       run: npm run build
 
-    # Step 5: Deploy to Netlify
+    # Step 5: Install Required Tools
+    - name: Install Netlify CLI
+      run: npm install -g netlify-cli
+
+    - name: Install jq
+      run: sudo apt-get install jq -y
+
+    # Step 6: Deploy to Netlify
     - name: Deploy to Netlify
+      uses: nwtgck/actions-netlify@v1.2
+      with:
+        publish-dir: ./dist
+        production-deploy: false
+      env:
+        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
+        NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
+
+    # Step 7: Capture Deployed URL
+    - name: Capture Deployed URL
+      id: capture-url
       run: |
-        npm install -g netlify-cli
-        npx netlify deploy --dir=./dist --json > deployment_logs.json
-        DEPLOYED_URL=$(cat deployment_logs.json | jq -r '.deploy_url')
-        if [ -z "$DEPLOYED_URL" ]; then
-          echo "Error: Failed to capture deployed URL."
-          exit 1
-        fi
+        DEPLOYED_URL=$(npx netlify sites:list --json | jq -r '.[] | select(.id=="${{ secrets.NETLIFY_SITE_ID }}") | .url')
         echo "Deployed URL: $DEPLOYED_URL"
         echo "DEPLOYED_URL=$DEPLOYED_URL" >> $GITHUB_ENV
 
-    # Step 6: Send Deployed URL to Backend
+    # Step 8: Send Deployed URL to Backend
     - name: Send Deployed URL to Backend
       run: |
-        if [ -z "${{ env.DEPLOYED_URL }}" ]; then
-          echo "Error: Deployed URL is not set."
-          exit 1
-        fi
         curl -X POST https://folio4ubackend-production.up.railway.app/capture-deployed-url \
           -H "Content-Type: application/json" \
           -d "{\"deployedUrl\": \"${{ env.DEPLOYED_URL }}\"}"
+
