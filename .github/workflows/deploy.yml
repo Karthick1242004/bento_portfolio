@@ -51,7 +51,7 @@ jobs:
     # Step 7: Deploy to Netlify
     - name: Deploy to Netlify
       run: |
-        npx netlify deploy --dir=./dist --site $NETLIFY_SITE_ID --alias "${{ env.SUBDOMAIN }}"
+        npx netlify deploy --prod --dir=./dist --site $NETLIFY_SITE_ID
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
         NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
