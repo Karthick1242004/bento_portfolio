@@ -36,30 +36,35 @@ jobs:
     - name: Install jq
       run: sudo apt-get install jq -y
 
-    # Step 6: Deploy to Netlify
+    # Step 6: Retrieve Subdomain from Backend
+    - name: Get Stored Subdomain
+      id: get-subdomain
+      run: |
+        SUBDOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".subdomain")
+        if [ -z "$SUBDOMAIN" ]; then
+          echo "Error: No subdomain stored in the backend. Store a subdomain before deploying."
+          exit 1
+        fi
+        echo "Subdomain: $SUBDOMAIN"
+        echo "SUBDOMAIN=$SUBDOMAIN" >> $GITHUB_ENV
+
+    # Step 7: Deploy to Netlify
     - name: Deploy to Netlify
-      uses: nwtgck/actions-netlify@v1.2
-      with:
-        publish-dir: ./dist
-        production-deploy: false
+      run: |
+        npx netlify deploy --prod --dir=./dist --site $NETLIFY_SITE_ID --alias "${{ env.SUBDOMAIN }}"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
         NETLIFY_SITE_ID: "d2a4e4e7-1d6e-432d-a541-137654ad8e68"
 
-    # Step 7: Capture Deployed URL
+    # Step 8: Capture Deployed URL
     - name: Capture Deployed URL
       id: capture-url
       run: |
-        npx netlify sites:list --json | jq '.'
-        DEPLOYED_URL=$(npx netlify sites:list --json | jq -r ".[] | select(.id==\"${{ secrets.NETLIFY_SITE_ID }}\") | .url")
-        if [ -z "$DEPLOYED_URL" ]; then
-          echo "Error: Deployed URL could not be fetched. Ensure that NETLIFY_SITE_ID matches the site in Netlify."
-          exit 1
-        fi
+        DEPLOYED_URL="https://${{ env.SUBDOMAIN }}.netlify.app"
         echo "Deployed URL: $DEPLOYED_URL"
         echo "DEPLOYED_URL=$DEPLOYED_URL" >> $GITHUB_ENV
 
-    # Step 8: Send Deployed URL to Backend
+    # Step 9: Send Deployed URL to Backend
     - name: Send Deployed URL to Backend
       run: |
         curl -X POST https://folio4ubackend-production.up.railway.app/capture-deployed-url \
