@@ -53,6 +53,6 @@ jobs:
       run: |
         echo "Deploying to domain: $DOMAIN"
         npx netlify sites:create --name "$DOMAIN" --json || true
-        npx netlify deploy --prod --dir=./dist --alias "$DOMAIN"
+        npx netlify deploy --dir=./dist --alias "$DOMAIN"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
