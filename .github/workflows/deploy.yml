@@ -29,20 +29,20 @@ jobs:
     - name: Build the Project
       run: npm run build
 
-    # Step 5: Install Required Tools
+    # Step 5: Install Netlify CLI
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
 
     - name: Install jq
       run: sudo apt-get install jq -y
 
-    # Step 6: Retrieve Subdomain from Backend
-    - name: Get Stored Subdomain
-      id: get-subdomain
+    # Step 6: Retrieve Domain from Backend
+    - name: Get Domain
+      id: get-domain
       run: |
         DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".subdomain")
         if [ -z "$DOMAIN" ]; then
-          echo "Error: No subdomain provided. Store a subdomain name before deploying."
+          echo "Error: No domain provided. Store a domain name before deploying."
           exit 1
         fi
         echo "Domain: $DOMAIN"
@@ -51,11 +51,8 @@ jobs:
     # Step 7: Deploy to Netlify
     - name: Deploy to Netlify
       run: |
-        SITE_ID=$(npx netlify sites:create --name "$DOMAIN" --json | jq -r '.id' || echo "")
-        if [ -z "$SITE_ID" ]; then
-          echo "Site already exists. Linking to the existing site."
-          npx netlify link --name "$DOMAIN"
-        fi
-        npx netlify deploy --prod --dir=./dist
+        echo "Deploying to domain: $DOMAIN"
+        npx netlify sites:create --name "$DOMAIN" --json || true
+        npx netlify deploy --prod --dir=./dist --alias "$DOMAIN"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
