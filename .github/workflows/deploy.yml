@@ -51,7 +51,11 @@ jobs:
     # Step 7: Deploy to Netlify
     - name: Deploy to Netlify
       run: |
-        npx netlify sites:create --name "$DOMAIN" || echo "Site already exists."
-        npx netlify deploy --prod --dir=./dist --site "$DOMAIN"
+        SITE_ID=$(npx netlify sites:create --name "$DOMAIN" --json | jq -r '.id' || echo "")
+        if [ -z "$SITE_ID" ]; then
+          echo "Site already exists. Linking to the existing site."
+          npx netlify link --name "$DOMAIN"
+        fi
+        npx netlify deploy --prod --dir=./dist
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
