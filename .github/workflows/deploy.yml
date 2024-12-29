@@ -29,15 +29,15 @@ jobs:
     - name: Build the Project
       run: npm run build
 
-    # Step 5: Install Netlify CLI
+    # Step 5: Install Required Tools
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
 
     - name: Install jq
-      run: sudo apt-get install jq -y
+      run: sudo apt-get install -y jq
 
     # Step 6: Retrieve Domain from Backend
-    - name: Get Domain
+    - name: Get Stored Domain
       id: get-domain
       run: |
         DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".subdomain")
@@ -52,7 +52,8 @@ jobs:
     - name: Deploy to Netlify
       run: |
         echo "Deploying to domain: $DOMAIN"
-        npx netlify sites:create --name "$DOMAIN" --json || true
-        npx netlify deploy --dir=./dist --alias "$DOMAIN"
+        TEAM_ID=$(npx netlify api listAccounts | jq -r '.[0].id')
+        npx netlify sites:create --name "$DOMAIN" --account-slug "$TEAM_ID" --json || true
+        npx netlify deploy --dir=./dist --prod --message "Deployed via GitHub Actions"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
