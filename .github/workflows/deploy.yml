@@ -37,7 +37,7 @@ jobs:
     - name: Get Domain Name
       id: get-domain
       run: |
-        DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-domain | jq -r ".domain")
+        DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".domain")
         if [ -z "$DOMAIN" ]; then
           echo "Error: No domain provided. Store a domain name before deploying."
           exit 1
