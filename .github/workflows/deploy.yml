@@ -33,33 +33,25 @@ jobs:
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
 
-    # Step 6: Retrieve Domain Name from Backend
-    - name: Get Domain Name
-      id: get-domain
+    - name: Install jq
+      run: sudo apt-get install jq -y
+
+    # Step 6: Retrieve Subdomain from Backend
+    - name: Get Stored Subdomain
+      id: get-subdomain
       run: |
-        DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".domain")
+        DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".subdomain")
         if [ -z "$DOMAIN" ]; then
-          echo "Error: No domain provided. Store a domain name before deploying."
+          echo "Error: No subdomain provided. Store a subdomain name before deploying."
           exit 1
         fi
         echo "Domain: $DOMAIN"
         echo "DOMAIN=$DOMAIN" >> $GITHUB_ENV
 
-    # Step 7: Create a New Netlify Site
-    - name: Create Netlify Site
-      id: create-site
-      run: |
-        SITE_DATA=$(npx netlify sites:create --name "$DOMAIN" --json)
-        echo "Site Data: $SITE_DATA"
-        SITE_ID=$(echo "$SITE_DATA" | jq -r ".id")
-        echo "Site ID: $SITE_ID"
-        echo "SITE_ID=$SITE_ID" >> $GITHUB_ENV
-      env:
-        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
-
-    # Step 8: Deploy to the Newly Created Site
+    # Step 7: Deploy to Netlify
     - name: Deploy to Netlify
       run: |
-        npx netlify deploy --prod --dir=./dist --site ${{ env.SITE_ID }}
+        npx netlify sites:create --name "$DOMAIN" || echo "Site already exists."
+        npx netlify deploy --prod --dir=./dist --site "$DOMAIN"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
