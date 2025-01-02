@@ -29,12 +29,9 @@ jobs:
     - name: Build the Project
       run: npm run build
 
-    # Step 5: Install Required Tools
+    # Step 5: Install Netlify CLI
     - name: Install Netlify CLI
       run: npm install -g netlify-cli
-
-    - name: Install jq
-      run: sudo apt-get install -y jq
 
     # Step 6: Retrieve Domain from Backend
     - name: Get Stored Domain
@@ -52,8 +49,16 @@ jobs:
     - name: Deploy to Netlify
       run: |
         echo "Deploying to domain: $DOMAIN"
-        TEAM_ID=$(npx netlify api listAccounts | jq -r '.[0].id')
-        npx netlify sites:create --name "$DOMAIN" --account-slug "$TEAM_ID" --json || true
-        npx netlify deploy --dir=./dist --prod --message "Deployed via GitHub Actions"
+        SITE_ID=$(npx netlify sites:list --json | jq -r ".[] | select(.name == \"$DOMAIN\") | .id")
+        if [ -z "$SITE_ID" ]; then
+          echo "Creating a new Netlify site with name: $DOMAIN"
+          SITE_ID=$(npx netlify sites:create --name "$DOMAIN" --json | jq -r '.id')
+        else
+          echo "Site $DOMAIN already exists with ID: $SITE_ID"
+        fi
+        echo "Linking to site ID: $SITE_ID"
+        npx netlify link --id "$SITE_ID"
+        echo "Deploying to Netlify..."
+        npx netlify deploy --prod --dir=./dist --message "Deployed via GitHub Actions"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
