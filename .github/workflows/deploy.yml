@@ -33,4 +33,4 @@ jobs:
         echo "Created site with ID: $SITE_ID"
         netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth "$NETLIFY_AUTH_TOKEN" --message "Initial deploy"
       env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
