@@ -15,6 +15,7 @@ jobs:
     - run: npm install
     - run: npm run build
     - run: npm install -g netlify-cli
+    
     - name: Get Stored Domain
       id: get-domain
       run: |
@@ -24,12 +25,12 @@ jobs:
           exit 1
         fi
         echo "DOMAIN=$DOMAIN" >> $GITHUB_ENV
+        
     - name: Deploy to Netlify
       run: |
-        echo "Deploying to domain: $DOMAIN"
-        netlify sites:create --name "$DOMAIN" || true
-        SITE_ID=$(netlify api listSites | jq -r --arg name "$DOMAIN" '.[] | select(.name==$name) | .id')
-        netlify link --id "$SITE_ID"
-        netlify deploy --prod --dir=./dist --site="$SITE_ID" --message "Deployed via GitHub Actions"
+        echo "Creating and deploying site: $DOMAIN"
+        SITE_ID=$(netlify sites:create --name "$DOMAIN" --json | jq -r '.id')
+        echo "Created site with ID: $SITE_ID"
+        netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth "$NETLIFY_AUTH_TOKEN" --message "Initial deploy"
       env:
-        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
