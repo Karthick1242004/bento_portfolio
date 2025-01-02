@@ -27,15 +27,9 @@ jobs:
     - name: Deploy to Netlify
       run: |
         echo "Deploying to domain: $DOMAIN"
-        SITE_INFO=$(netlify sites:list --json || echo "[]")
-        SITE_ID=$(echo "$SITE_INFO" | jq -r ".[] | select(.name==\"$DOMAIN\") | .id")
-        
-        if [ -z "$SITE_ID" ]; then
-          echo "Creating new site: $DOMAIN"
-          SITE_ID=$(netlify sites:create --name "$DOMAIN" --json | jq -r '.id')
-        fi
-        
+        netlify sites:create --name "$DOMAIN" || true
+        SITE_ID=$(netlify api listSites | jq -r --arg name "$DOMAIN" '.[] | select(.name==$name) | .id')
         netlify link --id "$SITE_ID"
-        netlify deploy --prod --dir=./dist --message "Deployed via GitHub Actions"
+        netlify deploy --prod --dir=./dist --site="$SITE_ID" --message "Deployed via GitHub Actions"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
