@@ -1,64 +1,41 @@
 name: Deploy Website
-
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-    # Step 1: Checkout Code
-    - name: Checkout Code
-      uses: actions/checkout@v3
-
-    # Step 2: Set Up Node.js
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: 16
-
-    # Step 3: Install Dependencies
-    - name: Install Dependencies
-      run: npm install
-
-    # Step 4: Build the Project
-    - name: Build the Project
-      run: npm run build
-
-    # Step 5: Install Netlify CLI
-    - name: Install Netlify CLI
-      run: npm install -g netlify-cli
-
-    # Step 6: Retrieve Domain from Backend
+    - run: npm install
+    - run: npm run build
+    - run: npm install -g netlify-cli
     - name: Get Stored Domain
       id: get-domain
       run: |
         DOMAIN=$(curl -s https://folio4ubackend-production.up.railway.app/get-subdomain | jq -r ".subdomain")
         if [ -z "$DOMAIN" ]; then
-          echo "Error: No domain provided. Store a domain name before deploying."
+          echo "Error: No domain provided"
           exit 1
         fi
-        echo "Domain: $DOMAIN"
         echo "DOMAIN=$DOMAIN" >> $GITHUB_ENV
-
-    # Step 7: Deploy to Netlify
     - name: Deploy to Netlify
       run: |
         echo "Deploying to domain: $DOMAIN"
-        SITE_ID=$(npx netlify sites:list --json | jq -r ".[] | select(.name == \"$DOMAIN\") | .id")
+        SITE_INFO=$(netlify sites:list --json || echo "[]")
+        SITE_ID=$(echo "$SITE_INFO" | jq -r ".[] | select(.name==\"$DOMAIN\") | .id")
+        
         if [ -z "$SITE_ID" ]; then
-          echo "Creating a new Netlify site with name: $DOMAIN"
-          SITE_ID=$(npx netlify sites:create --name "$DOMAIN" --json | jq -r '.id')
-        else
-          echo "Site $DOMAIN already exists with ID: $SITE_ID"
+          echo "Creating new site: $DOMAIN"
+          SITE_ID=$(netlify sites:create --name "$DOMAIN" --json | jq -r '.id')
         fi
-        echo "Linking to site ID: $SITE_ID"
-        npx netlify link --id "$SITE_ID"
-        echo "Deploying to Netlify..."
-        npx netlify deploy --prod --dir=./dist --message "Deployed via GitHub Actions"
+        
+        netlify link --id "$SITE_ID"
+        netlify deploy --prod --dir=./dist --message "Deployed via GitHub Actions"
       env:
         NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
