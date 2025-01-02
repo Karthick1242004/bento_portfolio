@@ -29,8 +29,9 @@ jobs:
     - name: Deploy to Netlify
       run: |
         echo "Creating and deploying site: $DOMAIN"
-        SITE_ID=$(netlify sites:create --name "$DOMAIN" --json | jq -r '.id')
+        netlify sites:create "$DOMAIN" --account-slug karthick1242004 --json > site.json
+        SITE_ID=$(cat site.json | jq -r '.id')
         echo "Created site with ID: $SITE_ID"
-        netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth "$NETLIFY_AUTH_TOKEN" --message "Initial deploy"
+        netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth="nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
       env:
-        NETLIFY_AUTH_TOKEN: "nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7"
+        NETLIFY_AUTH_TOKEN: nfp_Mq3Z9Kkht9jmNEEfCYmJGKogzsfhV3SZded7
