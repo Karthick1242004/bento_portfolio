@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const DATA_URL = 'https://gist.githubusercontent.com/Karthick1242004/7fe574d76c396c522c65b3cc702fc161/raw/data.json';
+const DATA_URL = 'https://gist.githubusercontent.com/Karthick1242004/d31f2313e627d919f55376b970499a7e/raw/data.json';
 
 
 export function usePortfolioData() {
