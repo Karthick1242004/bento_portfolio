@@ -52,4 +52,4 @@ jobs:
         netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth="nfp_o6sCeZQU48XWdYLqLxpPwmRMVcBtgLuQ3679"
 
       env:
-        NETLIFY_AUTH_TOKEN: nfp_3WtXN6Y5RcubEGtmixBbJYbpWVZHjrer7ab9
+        NETLIFY_AUTH_TOKEN: nfp_vz5TPB3KPcZokUTHYkh6j2FVRZZrSjzfc495
