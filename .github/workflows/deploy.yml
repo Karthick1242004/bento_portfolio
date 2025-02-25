@@ -49,7 +49,7 @@ jobs:
         echo "Created site with ID: $SITE_ID"
 
         # Deploy the site to Netlify
-        netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth="nfp_vz5TPB3KPcZokUTHYkh6j2FVRZZrSjzfc495"
+        netlify deploy --prod --dir=./dist --site="$SITE_ID" --auth="nfp_dmTjWcyc3W7KWMWepKDSnN2efxHq9kufe2f6"
 
       env:
-        NETLIFY_AUTH_TOKEN: nfp_vz5TPB3KPcZokUTHYkh6j2FVRZZrSjzfc495
+        NETLIFY_AUTH_TOKEN: nfp_dmTjWcyc3W7KWMWepKDSnN2efxHq9kufe2f6
